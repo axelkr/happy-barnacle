@@ -6,12 +6,12 @@ export class ObjectEventMappingService {
   private logger: Logger;
 
 	constructor() {
-        this.logger = Logger.getLogger({ name: this.constructor.name });
+    this.logger = Logger.getLogger({ name: this.constructor.name });
 	}
 
   public toObjectEventDB(objectEvent: ObjectEvent): ObjectEventDB {
     const convertedTime : string = "asd";
-    const convertedPayload : string = "asd";
+    const convertedPayload : string = JSON.stringify(Array.from(objectEvent.payload.entries()));
     return {
       topic: objectEvent.topic,
       time: convertedTime,
@@ -25,7 +25,7 @@ export class ObjectEventMappingService {
 
   public toObjectEvent(objectEventDB: ObjectEventDB): ObjectEvent {
     const convertedTime = new Date();
-    const convertedPayload = new Map<string,string>();
+    const convertedPayload = new Map<string,string>(JSON.parse(objectEventDB.payload));
     return {
       topic: objectEventDB.topic,
       time: convertedTime,
