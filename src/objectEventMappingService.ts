@@ -10,7 +10,7 @@ export class ObjectEventMappingService {
 	}
 
   public toObjectEventDB(objectEvent: ObjectEvent): ObjectEventDB {
-    const convertedTime : string = "asd";
+    const convertedTime : string = objectEvent.time.toUTCString();
     const convertedPayload : string = JSON.stringify(Array.from(objectEvent.payload.entries()));
     return {
       topic: objectEvent.topic,
@@ -24,7 +24,7 @@ export class ObjectEventMappingService {
   }
 
   public toObjectEvent(objectEventDB: ObjectEventDB): ObjectEvent {
-    const convertedTime = new Date();
+    const convertedTime = new Date(objectEventDB.time);
     const convertedPayload = new Map<string,string>(JSON.parse(objectEventDB.payload));
     return {
       topic: objectEventDB.topic,
