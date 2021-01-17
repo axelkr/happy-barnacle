@@ -16,8 +16,17 @@ export class Server {
 
 	public start(PORT: number): void {
         const app = express();
-        //TODO: restrict to localhost
-        app.use(cors({}));
+        const corsOptions = {
+            origin: function (origin:string, callback:any) {
+              const fromLocalHost = origin.startsWith('http://localhost:') || origin == 'http://localhost';
+              if (fromLocalHost) {
+                callback(null, true)
+              } else {
+                callback(new Error('Not allowed by CORS'))
+              }
+            }
+        }
+        app.use(cors(corsOptions));
         app.get('/objectEvent', (req,res) => {
             this.logger.debug("query of all events of a topic: ");
             if (!req.query.hasOwnProperty('topic')) {
