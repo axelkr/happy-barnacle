@@ -8,10 +8,11 @@ import {ObjectEventMappingService} from './objectEventMappingService';
 export class Database {
 	private logger: Logger;
     private db: sqlite.Database;
-    private readonly fileName: string = "objectEventStore.db";
+    private readonly fileName: string;
     private readonly mappingService : ObjectEventMappingService = new ObjectEventMappingService();
 
-	constructor() {
+	constructor(dbFileName:string) {
+        this.fileName = dbFileName;
         this.logger = Logger.getLogger({ name: this.constructor.name });
         this.initializeSqliteDatabase();
     }

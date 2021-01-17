@@ -1,4 +1,6 @@
 import {Server} from './Server';
+import {Database} from './Database';
 
-const runServer = new Server();
-runServer.start({port:8000});
+const db = new Database("objectEventStore.db");
+const runServer = new Server(db);
+runServer.start(8000);

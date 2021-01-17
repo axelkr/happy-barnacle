@@ -8,15 +8,13 @@ export class Server {
     private logger: Logger;
     private db: Database
 
-	constructor() {
+	constructor(database: Database) {
         this.logger = Logger.getLogger({ name: this.constructor.name });
-        this.db = new Database();
+        this.db = database;
 	}
 
-	public start(param: any): void {
+	public start(PORT: number): void {
         const app = express();
-        const PORT = 8000;
-        app.get('/', (req, res) => res.send('Express + TypeScript Server'));
         app.get('/objectEvent', (req,res) => {
             if (!req.query.hasOwnProperty('topic')) {
                 res.status(400).send('parameter topic missing');
