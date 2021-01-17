@@ -27,33 +27,52 @@ export class Server {
             }
         }
         app.use(cors(corsOptions));
+        app.use(express.json());
+        var aLogger = this.logger;
         app.get('/objectEvent', (req,res) => {
-            this.logger.debug("query of all events of a topic: ");
             if (!req.query.hasOwnProperty('topic')) {
                 res.status(400).send('parameter topic missing');
                 return;
             }
             const objectEvents = this.db.query(req.query.topic as string);
-            res.status(200).send(objectEvents);
+            const asDBObjects :any[] = []
+            objectEvents.forEach(objectEvent=>{
+                asDBObjects.push({
+                    topic : objectEvent.topic,
+                    time: objectEvent.time,
+                    id: objectEvent.id,
+                    eventType: objectEvent.eventType,
+                    object: objectEvent.object,
+                    objectType: objectEvent.objectType,
+                    payload: JSON.stringify(Array.from(objectEvent.payload.entries()))
+                })
+            })
+            res.status(200).send(JSON.stringify(asDBObjects));
         })
         app.post('/objectEvent', (req,res) => {
-            this.logger.debug("storing object event");
-            this.logger.debug(req.query);
-            this.logger.debug(req.body);
             // TODO: validate input, extract payload
+            const idToBeDiscarded = 0;
+            const timeToBeDiscarded = new Date();
             const inputObjectEvent : ObjectEvent = {
-                topic: req.query.topic as string,
-                time: new Date(),
-                id: parseInt(req.query.id as string),
-                eventType: req.query.eventType as string,
-                object: req.query.object as string,
-                objectType: req.query.objectType as string,
-                payload: new Map<string,string>()
+                topic: req.body.topic as string,
+                time: timeToBeDiscarded,
+                id: idToBeDiscarded,
+                eventType: req.body.eventType as string,
+                object: req.body.object as string,
+                objectType: req.body.objectType as string,
+                payload: new Map<string,string>(JSON.parse(req.body.payload))
             }
             const objectEvent = this.db.store(inputObjectEvent);
-            res.status(200).send(objectEvent);
+            res.status(200).send({
+                topic : objectEvent.topic,
+                time: objectEvent.time,
+                id: objectEvent.id,
+                eventType: objectEvent.eventType,
+                object: objectEvent.object,
+                objectType: objectEvent.objectType,
+                payload: JSON.stringify(Array.from(objectEvent.payload.entries()))
+            });
         });
-        var aLogger = this.logger;
         app.use(function(req, res) {
             aLogger.debug(`404`);
             res.status(404).send();
