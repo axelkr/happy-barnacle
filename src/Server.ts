@@ -17,7 +17,7 @@ export class Server {
 	public start(PORT: number): void {
         const app = express();
         const corsOptions = {
-            origin: function (origin:string, callback:any) {
+            origin: function (origin:string, callback:any) { // eslint-disable-line @typescript-eslint/no-explicit-any
               const fromLocalHost = origin.startsWith('http://localhost:') || origin == 'http://localhost';
               if (fromLocalHost) {
                 callback(null, true)
@@ -28,14 +28,14 @@ export class Server {
         }
         app.use(cors(corsOptions));
         app.use(express.json());
-        var aLogger = this.logger;
+        const aLogger = this.logger;
         app.get('/objectEvent', (req,res) => {
-            if (!req.query.hasOwnProperty('topic')) {
+            if (!req.query.hasOwnProperty('topic')) { // eslint-disable-line no-prototype-builtins
                 res.status(400).send('parameter topic missing');
                 return;
             }
             const objectEvents = this.db.query(req.query.topic as string);
-            const asDBObjects :any[] = []
+            const asDBObjects :any[] = [] // eslint-disable-line @typescript-eslint/no-explicit-any
             objectEvents.forEach(objectEvent=>{
                 asDBObjects.push({
                     topic : objectEvent.topic,

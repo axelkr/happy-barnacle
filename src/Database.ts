@@ -30,7 +30,7 @@ export class Database {
     public query(topic:string): ObjectEvent[] {
         const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ?');
         const eventsOfTopic = stmt.all(topic);
-        let results : ObjectEvent[] = [];
+        const results : ObjectEvent[] = [];
         eventsOfTopic.forEach(aObjEventDB => {results.push(this.mappingService.toObjectEvent(aObjEventDB))});
         return results;
     }
