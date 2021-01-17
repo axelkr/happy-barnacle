@@ -16,6 +16,7 @@ export class Server {
 	public start(PORT: number): void {
         const app = express();
         app.get('/objectEvent', (req,res) => {
+            this.logger.debug("query of all events of a topic: ");
             if (!req.query.hasOwnProperty('topic')) {
                 res.status(400).send('parameter topic missing');
                 return;
@@ -23,8 +24,8 @@ export class Server {
             const objectEvents = this.db.query(req.query.topic as string);
             res.status(200).send(objectEvents);
         })
-        app.post('objectEvent', (req,res) => {
-            this.logger.debug("received: ", req.query);
+        app.post('/objectEvent', (req,res) => {
+            this.logger.debug("storing object event");
             // TODO: validate input, extract payload
             const inputObjectEvent : ObjectEvent = {
                 topic: req.query.topic as string,
@@ -37,7 +38,12 @@ export class Server {
             }
             const objectEvent = this.db.store(inputObjectEvent);
             res.status(200).send(objectEvent);
-        })
+        });
+        var aLogger = this.logger;
+        app.use(function(req, res) {
+            aLogger.debug(`404`);
+            res.status(404).send();
+          });
         app.listen(PORT, () => {
             this.logger.debug(`Server is running at http://localhost:${PORT}`);
         });
