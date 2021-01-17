@@ -1,6 +1,6 @@
 {
-  "group": "HappyBarnacle",
-  "name": "ContinuousIntegration",
+  "group": "Barnacle",
+  "name": "CI_HappyBarnacle",
   "display_order_weight": -1.0,
   "label_template": "${COUNT}",
   "lock_behavior": "none",
