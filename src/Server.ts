@@ -50,8 +50,7 @@ export class Server {
             res.status(200).send(JSON.stringify(asDBObjects));
         })
         app.post('/objectEvent', (req,res) => {
-            // TODO: persist date as well
-            // TODO: validate input, extract payload
+            
             const idToBeDiscarded = 0;
             const timeToBeDiscarded = new Date();
             const inputObjectEvent : ObjectEvent = {
