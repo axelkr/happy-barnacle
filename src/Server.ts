@@ -1,5 +1,6 @@
 import { Logger } from 'sitka';
 import express from 'express';
+import cors from 'cors';
 
 import {Database} from './Database';
 import {ObjectEvent} from './objectEvent';
@@ -15,6 +16,8 @@ export class Server {
 
 	public start(PORT: number): void {
         const app = express();
+        //TODO: restrict to localhost
+        app.use(cors({}));
         app.get('/objectEvent', (req,res) => {
             this.logger.debug("query of all events of a topic: ");
             if (!req.query.hasOwnProperty('topic')) {
@@ -26,6 +29,8 @@ export class Server {
         })
         app.post('/objectEvent', (req,res) => {
             this.logger.debug("storing object event");
+            this.logger.debug(req.query);
+            this.logger.debug(req.body);
             // TODO: validate input, extract payload
             const inputObjectEvent : ObjectEvent = {
                 topic: req.query.topic as string,
