@@ -8,13 +8,11 @@ import {ObjectEventMappingService} from './objectEventMappingService';
 export class Database {
 	private logger: Logger;
     private db: sqlite.Database;
-    private readonly fileName: string;
     private readonly mappingService : ObjectEventMappingService = new ObjectEventMappingService();
 
 	constructor(dbFileName:string) {
-        this.fileName = dbFileName;
         this.logger = Logger.getLogger({ name: this.constructor.name });
-        this.initializeSqliteDatabase();
+        this.initializeSqliteDatabase(dbFileName);
     }
     
     public store(objectEvent:ObjectEvent): ObjectEvent {
@@ -35,12 +33,12 @@ export class Database {
         return results;
     }
 
-    private initializeSqliteDatabase(){
-        try {
-            this.db = sqlite(this.fileName,{fileMustExist:true});
-        } catch(e){
+    private initializeSqliteDatabase(dbFileName:string){
+        this.db = sqlite(dbFileName);
+        
+        const objectEventsTableExists = 1 == (this.db.prepare("SELECT COUNT(name) as NumberObjectEventsTables FROM sqlite_master WHERE type='table' AND name='objectEvents'").get().NumberObjectEventsTables);
+        if (!objectEventsTableExists) {
             this.logger.debug(`initializing new DB`);
-            this.db = sqlite(this.fileName);
             const createObjectEventTable = this.db.prepare("CREATE TABLE objectEvents(id INTEGER PRIMARY KEY AUTOINCREMENT,\
                                                        topic text NOT NULL,\
                                                        time text NOT NULL,\
