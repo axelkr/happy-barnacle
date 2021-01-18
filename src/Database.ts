@@ -25,11 +25,22 @@ export class Database {
         return objectEvent;
     }
 
-    public query(topic:string): ObjectEvent[] {
-        const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ?');
-        const eventsOfTopic = stmt.all(topic);
+    public query(topic:string, parameters?: {object?:string,objectType?:string}): ObjectEvent[] {
+        let stmt = 'SELECT * FROM objectEvents WHERE topic= ?';
+        const stmtParameters: string[] = [topic];
+        if (parameters !== undefined && parameters.object !== undefined ) {
+            stmt = stmt + " AND object = ?";
+            stmtParameters.push(parameters.object);
+        }
+        if (parameters !== undefined && parameters.objectType !== undefined ) {
+            stmt = stmt + " AND objectType = ?";
+            stmtParameters.push(parameters.objectType);
+        }
+        const dbStmt = this.db.prepare(stmt);
+        const dbEvents : ObjectEventDB[] = dbStmt.all(stmtParameters);
+
         const results : ObjectEvent[] = [];
-        eventsOfTopic.forEach(aObjEventDB => {results.push(this.mappingService.toObjectEvent(aObjEventDB))});
+        dbEvents.forEach(aObjEventDB => {results.push(this.mappingService.toObjectEvent(aObjEventDB))});
         return results;
     }
 
@@ -38,6 +49,7 @@ export class Database {
         
         const objectEventsTableExists = 1 == (this.db.prepare("SELECT COUNT(name) as NumberObjectEventsTables FROM sqlite_master WHERE type='table' AND name='objectEvents'").get().NumberObjectEventsTables);
         if (!objectEventsTableExists) {
+
             this.logger.debug(`initializing new DB`);
             const createObjectEventTable = this.db.prepare("CREATE TABLE objectEvents(id INTEGER PRIMARY KEY AUTOINCREMENT,\
                                                        topic text NOT NULL,\

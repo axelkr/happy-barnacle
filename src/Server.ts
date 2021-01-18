@@ -34,7 +34,14 @@ export class Server {
                 res.status(400).send('parameter topic missing');
                 return;
             }
-            const objectEvents = this.db.query(req.query.topic as string);
+            const optionalParameters :any = {};
+            if(!req.query.hasOwnProperty('object')) {// eslint-disable-line no-prototype-builtins
+                optionalParameters.object = req.query.object;
+            }
+            if(!req.query.hasOwnProperty('objectType')) {// eslint-disable-line no-prototype-builtins
+                optionalParameters.objectType = req.query.objectType;
+            }
+            const objectEvents = this.db.query(req.query.topic as string,optionalParameters);
             const asDBObjects :any[] = [] // eslint-disable-line @typescript-eslint/no-explicit-any
             objectEvents.forEach(objectEvent=>{
                 asDBObjects.push({
