@@ -28,33 +28,24 @@ export class Database {
     }
 
     public query(topic:string, parameters?: {object?:string,objectType?:string}): ObjectEvent[] {
-        let object : string = undefined;
-        let objectType : string = undefined;
+        let stmt = 'SELECT * FROM objectEvents WHERE topic= ?';
+        let stmtParameters : string[] = [topic];
         if (parameters !== undefined && parameters.object !== undefined ) {
-            object = parameters.object;
+            stmt = stmt + " AND object = ?";
+            stmtParameters.push(parameters.object);
         }
         if (parameters !== undefined && parameters.objectType !== undefined ) {
-            objectType = parameters.objectType;
+            stmt = stmt + " AND objectType = ?";
+            stmtParameters.push(parameters.objectType);
         }
-        let dbEvents : ObjectEventDB[] = [];
-        if (object === undefined && objectType === undefined) {
-            const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ?');
-            dbEvents = stmt.all(topic);
-        } else if (object !== undefined && objectType === undefined) {
-            const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ? AND object = ?');
-            dbEvents = stmt.all(topic,object);
-        } else if (object === undefined && objectType !== undefined) {
-            const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ? AND objectType = ?');
-            dbEvents = stmt.all(topic,objectType);
-        } else if (object !== undefined && objectType !== undefined) {            
-            const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ? AND object = ? AND objectType = ?');
-            dbEvents = stmt.all(topic,object, objectType);
-        }
+        const dbStmt = this.db.prepare(stmt);
+        const dbEvents : ObjectEventDB[] = dbStmt.all(stmtParameters);
 
         const results : ObjectEvent[] = [];
         dbEvents.forEach(aObjEventDB => {results.push(this.mappingService.toObjectEvent(aObjEventDB))});
         return results;
     }
+    
     private initializeSqliteDatabase(){
         try {
             this.db = sqlite(this.fileName,{fileMustExist:true});
