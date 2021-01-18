@@ -27,14 +27,34 @@ export class Database {
         return objectEvent;
     }
 
-    public query(topic:string): ObjectEvent[] {
-        const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ?');
-        const eventsOfTopic = stmt.all(topic);
+    public query(topic:string, parameters?: {object?:string,objectType?:string}): ObjectEvent[] {
+        let object : string = undefined;
+        let objectType : string = undefined;
+        if (parameters !== undefined && parameters.object !== undefined ) {
+            object = parameters.object;
+        }
+        if (parameters !== undefined && parameters.objectType !== undefined ) {
+            objectType = parameters.objectType;
+        }
+        let dbEvents : ObjectEventDB[] = [];
+        if (object === undefined && objectType === undefined) {
+            const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ?');
+            dbEvents = stmt.all(topic);
+        } else if (object !== undefined && objectType === undefined) {
+            const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ? AND object = ?');
+            dbEvents = stmt.all(topic,object);
+        } else if (object === undefined && objectType !== undefined) {
+            const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ? AND objectType = ?');
+            dbEvents = stmt.all(topic,objectType);
+        } else if (object !== undefined && objectType !== undefined) {            
+            const stmt = this.db.prepare('SELECT * FROM objectEvents WHERE topic= ? AND object = ? AND objectType = ?');
+            dbEvents = stmt.all(topic,object, objectType);
+        }
+
         const results : ObjectEvent[] = [];
-        eventsOfTopic.forEach(aObjEventDB => {results.push(this.mappingService.toObjectEvent(aObjEventDB))});
+        dbEvents.forEach(aObjEventDB => {results.push(this.mappingService.toObjectEvent(aObjEventDB))});
         return results;
     }
-
     private initializeSqliteDatabase(){
         try {
             this.db = sqlite(this.fileName,{fileMustExist:true});
