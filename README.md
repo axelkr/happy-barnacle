@@ -15,7 +15,7 @@ An object event is an event which belong to one specific object. Nothing fancy, 
 Class Server starts a REST interface. You can either start it in your environment or use index.ts to start it directly from the shell. The server allows Cross-Origin-Requests for calls originating from localhost.
 
 ### GET /objectEvent
-Retrieve all objectEvents of a topic. Topic is a mandatory parameter.
+Retrieve all objectEvents of a topic. Topic is a mandatory parameter. object and objectType are optional parameters.
 
 ### POST /objectEvent
 Store a new objectEvent. 
