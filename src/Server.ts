@@ -4,10 +4,12 @@ import cors from 'cors';
 
 import {Database} from './Database';
 import {ObjectEvent} from './objectEvent';
+import {ObjectEventMappingService} from './objectEventMappingService';
 
 export class Server {
     private logger: Logger;
     private db: Database
+    private objectEventMappingService : ObjectEventMappingService = new ObjectEventMappingService();
 
 	constructor(database: Database) {
         this.logger = Logger.getLogger({ name: this.constructor.name });
@@ -44,49 +46,30 @@ export class Server {
             const objectEvents = this.db.query(req.query.topic as string,optionalParameters);
             const asDBObjects :any[] = [] // eslint-disable-line @typescript-eslint/no-explicit-any
             objectEvents.forEach(objectEvent=>{
-                asDBObjects.push({
-                    topic : objectEvent.topic,
-                    time: objectEvent.time,
-                    id: objectEvent.id,
-                    eventType: objectEvent.eventType,
-                    object: objectEvent.object,
-                    objectType: objectEvent.objectType,
-                    payload: JSON.stringify(Array.from(objectEvent.payload.entries()))
-                })
+                asDBObjects.push( this.objectEventMappingService.toObjectEventREST(objectEvent))
             })
             res.status(200).send(JSON.stringify(asDBObjects));
         })
+
         app.post('/objectEvent', (req,res) => {
+            const inputBody = req.body;
+            const idToBeDiscarded = 0;            
+            req.body.id = idToBeDiscarded;
+            const dateToBeDiscarded = new Date();
+            req.body.time = dateToBeDiscarded;
             
-            const idToBeDiscarded = 0;
-            const timeToBeDiscarded = new Date();
-            const inputObjectEvent : ObjectEvent = {
-                topic: req.body.topic as string,
-                time: timeToBeDiscarded,
-                id: idToBeDiscarded,
-                eventType: req.body.eventType as string,
-                object: req.body.object as string,
-                objectType: req.body.objectType as string,
-                payload: new Map<string,string>(JSON.parse(req.body.payload))
-            }
+            const inputObjectEvent : ObjectEvent= this.objectEventMappingService.fromObjectEventREST(inputBody);
             const objectEvent = this.db.store(inputObjectEvent);
-            res.status(200).send({
-                topic : objectEvent.topic,
-                time: objectEvent.time,
-                id: objectEvent.id,
-                eventType: objectEvent.eventType,
-                object: objectEvent.object,
-                objectType: objectEvent.objectType,
-                payload: JSON.stringify(Array.from(objectEvent.payload.entries()))
-            });
+            res.status(200).send( this.objectEventMappingService.toObjectEventREST(objectEvent));
         });
+        
         app.use(function(req, res) {
             aLogger.debug(`404`);
             res.status(404).send();
           });
-        app.listen(PORT, () => {
+        
+          app.listen(PORT, () => {
             this.logger.debug(`Server is running at http://localhost:${PORT}`);
         });
     }
-
 }
