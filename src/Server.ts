@@ -92,7 +92,7 @@ export class Server {
                 const keyIsOfTypeString = (typeof key === 'string' || key instanceof String);
                 const valueIsOfTypeString = (typeof value === 'string' || value instanceof String);
                 if (!keyIsOfTypeString || !valueIsOfTypeString) {
-                    validationErrors.push('payload is not a stringied map of strings to strings');
+                    validationErrors.push('payload is not a stringified map of strings to strings');
                 }
             })
 
