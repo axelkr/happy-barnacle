@@ -18,7 +18,7 @@ Class Server starts a REST interface. You can either start it in your environmen
 Retrieve all objectEvents of a topic. Topic is a mandatory parameter. object and objectType are optional parameters.
 
 ### POST /objectEvent
-Store a new objectEvent. No need to transfer an id or time for the event, as those will be set by the server. The server expects the payload to be encoded via 
+Store a new objectEvent. No need to transfer an id or time for the event, as those will be set by the server.
 
 ### Encoding of payload for REST calls
 Payload has to be encoded
