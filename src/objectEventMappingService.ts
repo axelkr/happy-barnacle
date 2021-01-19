@@ -4,9 +4,6 @@ import { ObjectEventREST } from './objectEventREST';
 
 export class ObjectEventMappingService {
 
-  constructor() {
-  }
-
   public toObjectEventDB(objectEvent: ObjectEvent): ObjectEventDB {
     const convertedTime: string = objectEvent.time.toUTCString();
     const convertedPayload: string = JSON.stringify(Array.from(objectEvent.payload.entries()));
