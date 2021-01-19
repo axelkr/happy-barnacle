@@ -88,9 +88,9 @@ export class Server {
         });
         try {
             const parsedMap: Map<any, any> = JSON.parse(body["payload"]); // eslint-disable-line @typescript-eslint/no-explicit-any
-            parsedMap.forEach((value, key) => {
-                const keyIsOfTypeString = (typeof key === 'string' || key instanceof String);
-                const valueIsOfTypeString = (typeof value === 'string' || value instanceof String);
+            parsedMap.forEach((value) => {
+                const keyIsOfTypeString = (typeof value[0] === 'string' || value[0] instanceof String);
+                const valueIsOfTypeString = (typeof value[1] === 'string' || value[1] instanceof String);
                 if (!keyIsOfTypeString || !valueIsOfTypeString) {
                     validationErrors.push('payload is not a stringified map of strings to strings');
                 }
