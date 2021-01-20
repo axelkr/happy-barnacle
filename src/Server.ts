@@ -97,7 +97,7 @@ export class Server {
             })
 
         } catch (_error) {
-            validationErrors.push('payload is not a stringied map of strings to strings');
+            validationErrors.push('payload is not a stringified map of strings to strings');
         }
         return validationErrors;
     }
