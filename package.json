@@ -12,7 +12,7 @@
   "main": "dist/main.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist/"
+    "/dist/*.js"
   ],
   "scripts": {
     "build": "tsc",

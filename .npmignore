@@ -1,8 +1,0 @@
-deployment/
-node_modules/
-src/
-.eslintrc
-.gitignore
-.mocharc.js
-tsconfig.json
-tsconfig.production.json
