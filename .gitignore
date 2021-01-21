@@ -8,8 +8,8 @@ npm-debug.log*
 # databases
 *.db
 
-#mocha test results
-test-results.xml
+#test results
+results.xml
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
