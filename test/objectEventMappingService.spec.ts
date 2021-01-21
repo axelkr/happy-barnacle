@@ -1,8 +1,8 @@
 'use strict';
 
 import { expect } from 'chai';
-import { ObjectEventMappingService } from './objectEventMappingService';
-import { ObjectEvent } from './objectEvent';
+import { ObjectEventMappingService } from '../src/objectEventMappingService';
+import { ObjectEvent } from '../src/objectEvent';
 
 describe('ObjectEventMappingService', () => {
 	it('should create an instance using its constructor', () => {
