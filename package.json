@@ -12,17 +12,16 @@
   "main": "dist/main.js",
   "types": "dist/index.d.ts",
   "files": [
-    "/dist/*.js"
+    "/dist/*.js","/dist/*.d.ts"
   ],
   "scripts": {
     "build": "tsc",
-    "buildProduction": "tsc --project tsconfig.production.json",
     "start": "node dist/main.js",
     "clean": "(rm -r ./dist || true)",
     "clean:all": "npm run clean && (rm -r ./node_modules || true)",
     "prepare": "npm run build",
-    "test": "mocha -r ts-node/register src/**/*.spec.ts",
-    "testCLI": "mocha -r ts-node/register --reporter mocha-junit-reporter src/**/*.spec.ts",
+    "test": "mocha -r ts-node/register test/**/*.spec.ts",
+    "testCLI": "mocha -r ts-node/register --reporter mocha-junit-reporter test/**/*.spec.ts",
     "upgrade": "npx npm-check -u",
     "lint": "eslint src/ --ext .ts"
   },
