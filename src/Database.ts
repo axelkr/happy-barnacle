@@ -16,7 +16,6 @@ export class Database {
     }
 
     public store(objectEvent: ObjectEvent): ObjectEvent {
-        objectEvent.time = new Date();
         const asObjectEventDB: ObjectEventDB = this.mappingService.toObjectEventDB(objectEvent);
         const stmt = this.db.prepare('INSERT INTO objectEvents(topic, time,eventType,object,objectType,payload) VALUES (?, ?, ?, ?, ?, ?)');
         const info = stmt.run(asObjectEventDB.topic, asObjectEventDB.time, asObjectEventDB.eventType,

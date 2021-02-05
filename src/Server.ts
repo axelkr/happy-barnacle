@@ -61,8 +61,10 @@ export class Server {
             const inputBody = req.body;
             const idToBeDiscarded = 0;
             req.body.id = idToBeDiscarded;
-            const dateToBeDiscarded = new Date();
-            req.body.time = dateToBeDiscarded;
+            if (! req.body.hasOwnProperty('time')) { // eslint-disable-line no-prototype-builtins
+                const dateToBeDiscarded = new Date();
+                req.body.time = dateToBeDiscarded;
+            }
 
             const inputObjectEvent: ObjectEvent = this.objectEventMappingService.fromObjectEventREST(inputBody);
             const objectEvent = this.db.store(inputObjectEvent);

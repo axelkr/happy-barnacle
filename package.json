@@ -1,6 +1,6 @@
 {
   "name": "happy-barnacle",
-  "version": "1.1.4",
+  "version": "2.0.0",
   "description": "A backend server for persisting object events.",
   "keywords": [],
   "author": "Axel",
@@ -22,7 +22,6 @@
     "clean:all": "npm run clean && (rm -r ./node_modules || true)",
     "test": "ts-node  --skip-project -s ./node_modules/jasmine-xml-reporter/bin/jasmine --config=jasmine.json",
     "testCLI": "ts-node  --skip-project -s ./node_modules/jasmine-xml-reporter/bin/jasmine --config=jasmine.json --junitreport",
-    "upgrade": "npx npm-check -u",
     "lint": "eslint src/ --ext .ts"
   },
   "devDependencies": {
