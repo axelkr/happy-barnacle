@@ -1,3 +1,6 @@
+# v2.1.1
+- rename event stream endpoint to /newObjectEvents as well
+
 # v2.1.0
 - clients can subscribe to server side events to receive newly stored object events at /newObjectEvents
 

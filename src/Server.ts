@@ -74,7 +74,7 @@ export class Server {
             this.newObjectEventStream.emit('push', objectEvent);
         });
 
-        app.get('/objectEvents', function (_request, response) {
+        app.get('/newObjectEvents', function (_request, response) {
             response.writeHead(200, {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache',
