@@ -74,15 +74,16 @@ export class Server {
             this.newObjectEventStream.emit('push', objectEvent);
         });
 
+        const newObjectEventStream = this.newObjectEventStream;
+        const objectEventMappingService = this.objectEventMappingService;
         app.get('/newObjectEvents', function (_request, response) {
             response.writeHead(200, {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache',
                 'Connection': 'keep-alive',
             })
-
-            this.newObjectEventStream.on('push', function (objectEvent: ObjectEvent) {
-                response.write(this.objectEventMappingService.toObjectEventREST(objectEvent));
+            newObjectEventStream.on('push', function (objectEvent: ObjectEvent) {
+                response.write(JSON.stringify(objectEventMappingService.toObjectEventREST(objectEvent)));
             })
         })
 
