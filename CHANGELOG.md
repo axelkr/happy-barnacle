@@ -1,3 +1,6 @@
+# v2.1.2
+- write event in expected format.
+
 # v2.1.1
 - rename event stream endpoint to /newObjectEvents as well
 
