@@ -83,7 +83,8 @@ export class Server {
                 'Connection': 'keep-alive',
             })
             newObjectEventStream.on('push', function (objectEvent: ObjectEvent) {
-                response.write(JSON.stringify(objectEventMappingService.toObjectEventREST(objectEvent)));
+                response.write("event: message\n");
+                response.write("data:" + JSON.stringify(objectEventMappingService.toObjectEventREST(objectEvent)) + "\n\n");
             })
         })
 
