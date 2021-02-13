@@ -1,3 +1,6 @@
+# v2.1.0
+- clients can subscribe to server side events to receive newly stored object events at /newObjectEvents
+
 # v2.0.0
 - breaking change: only if client doesn't provide an event time, does the server set it. This enables loading kanban data from other sources.
 

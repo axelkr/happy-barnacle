@@ -1,6 +1,7 @@
 import { Logger } from 'sitka';
 import express from 'express';
 import cors from 'cors';
+import EventEmmiter from 'events';
 
 import { Database } from './Database';
 import { ObjectEvent } from './objectEvent';
@@ -11,6 +12,7 @@ export class Server {
     private logger: Logger;
     private db: Database
     private objectEventMappingService: ObjectEventMappingService = new ObjectEventMappingService();
+    private newObjectEventStream: EventEmmiter = new EventEmmiter();
 
     constructor(database: Database) {
         this.logger = Logger.getLogger({ name: this.constructor.name });
@@ -61,7 +63,7 @@ export class Server {
             const inputBody = req.body;
             const idToBeDiscarded = 0;
             req.body.id = idToBeDiscarded;
-            if (! req.body.hasOwnProperty('time')) { // eslint-disable-line no-prototype-builtins
+            if (!req.body.hasOwnProperty('time')) { // eslint-disable-line no-prototype-builtins
                 const dateToBeDiscarded = new Date();
                 req.body.time = dateToBeDiscarded;
             }
@@ -69,7 +71,20 @@ export class Server {
             const inputObjectEvent: ObjectEvent = this.objectEventMappingService.fromObjectEventREST(inputBody);
             const objectEvent = this.db.store(inputObjectEvent);
             res.status(200).send(this.objectEventMappingService.toObjectEventREST(objectEvent));
+            this.newObjectEventStream.emit('push', objectEvent);
         });
+
+        app.get('/objectEvents', function (_request, response) {
+            response.writeHead(200, {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+            })
+
+            this.newObjectEventStream.on('push', function (objectEvent: ObjectEvent) {
+                response.write(this.objectEventMappingService.toObjectEventREST(objectEvent));
+            })
+        })
 
         app.use(function (_req, res) {
             res.status(404).send();

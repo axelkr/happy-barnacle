@@ -1,6 +1,6 @@
 {
   "name": "happy-barnacle",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A backend server for persisting object events.",
   "keywords": [],
   "author": "Axel",
@@ -39,6 +39,7 @@
     "jasmine-spec-reporter": "^6.0.0",
     "jasmine-xml-reporter": "^1.2.1",
     "rollup": "^2.37.1",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "rollup-plugin-typescript2": "^0.29.0",
     "source-map-support": "^0.5.19",
     "ts-node": "^9.1.1",
