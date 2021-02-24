@@ -1,14 +1,13 @@
 import { Logger } from 'sitka';
 import sqlite from 'better-sqlite3';
 
-import { ObjectEvent, ObjectEventMappingService } from 'choicest-barnacle';
+import { ObjectEvent } from 'choicest-barnacle';
 import { ObjectEventDB } from './objectEventDB';
 import { ObjectEventDBMappingService } from './objectEventDBMappingService';
 
 export class Database {
     private logger: Logger;
     private db: sqlite.Database;
-    private readonly mappingRESTService = new ObjectEventMappingService();
     private readonly mappingDBService = new ObjectEventDBMappingService();
 
     constructor(dbFileName: string) {
@@ -17,7 +16,6 @@ export class Database {
     }
 
     public store(objectEvent: ObjectEvent): ObjectEvent {
-        objectEvent.time = new Date();
         const asObjectEventDB: ObjectEventDB = this.mappingDBService.toObjectEventDB(objectEvent);
         const stmt = this.db.prepare('INSERT INTO objectEvents(topic, time,eventType,object,objectType,payload) VALUES (?, ?, ?, ?, ?, ?)');
         const info = stmt.run(asObjectEventDB.topic, asObjectEventDB.time, asObjectEventDB.eventType,

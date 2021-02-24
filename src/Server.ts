@@ -1,6 +1,7 @@
 import { Logger } from 'sitka';
 import express from 'express';
 import cors from 'cors';
+import EventEmmiter from 'events';
 
 import { Database } from './Database';
 import { ObjectEvent, ObjectEventMappingService, ObjectEventREST } from 'choicest-barnacle';
@@ -10,6 +11,7 @@ export class Server {
     private logger: Logger;
     private db: Database
     private objectEventMappingService: ObjectEventMappingService = new ObjectEventMappingService();
+    private newObjectEventStream: EventEmmiter = new EventEmmiter();
 
     constructor(database: Database) {
         this.logger = Logger.getLogger({ name: this.constructor.name });
@@ -60,13 +62,30 @@ export class Server {
             const inputBody = req.body;
             const idToBeDiscarded = 0;
             req.body.id = idToBeDiscarded;
-            const dateToBeDiscarded = new Date();
-            req.body.time = dateToBeDiscarded;
+            if (!req.body.hasOwnProperty('time')) { // eslint-disable-line no-prototype-builtins
+                const dateToBeDiscarded = new Date();
+                req.body.time = dateToBeDiscarded;
+            }
 
             const inputObjectEvent: ObjectEvent = this.objectEventMappingService.fromObjectEventREST(inputBody);
             const objectEvent = this.db.store(inputObjectEvent);
             res.status(200).send(this.objectEventMappingService.toObjectEventREST(objectEvent));
+            this.newObjectEventStream.emit('push', objectEvent);
         });
+
+        const newObjectEventStream = this.newObjectEventStream;
+        const objectEventMappingService = this.objectEventMappingService;
+        app.get('/newObjectEvents', function (_request, response) {
+            response.writeHead(200, {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                'Connection': 'keep-alive',
+            })
+            newObjectEventStream.on('push', function (objectEvent: ObjectEvent) {
+                response.write("event: message\n");
+                response.write("data:" + JSON.stringify(objectEventMappingService.toObjectEventREST(objectEvent)) + "\n\n");
+            })
+        })
 
         app.use(function (_req, res) {
             res.status(404).send();

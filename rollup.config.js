@@ -1,4 +1,5 @@
 import typescript from 'rollup-plugin-typescript2';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export default {
     input: 'src/index.ts',
@@ -18,6 +19,7 @@ export default {
         typescript({
           typescript: require('typescript'),
         }),
+        nodePolyfills()
     ],
     external: [ 'sitka','cors','express','better-sqlite3','choicest-barnacle' ]
   };

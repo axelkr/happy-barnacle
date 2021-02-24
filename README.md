@@ -20,6 +20,9 @@ Retrieve all objectEvents of a topic. Topic is a mandatory parameter. object and
 ### POST /objectEvent
 Store a new objectEvent. No need to transfer an id or time for the event, as those will be set by the server.
 
+### GET /newObjectEvents
+Newly stored object events are provided via this server side event stream as well.
+
 ### Encoding of payload for REST calls
 Payload has to be encoded
 ~~~
