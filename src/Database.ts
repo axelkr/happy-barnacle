@@ -1,14 +1,14 @@
 import { Logger } from 'sitka';
 import sqlite from 'better-sqlite3';
 
-import { ObjectEvent } from './objectEvent';
+import { ObjectEvent } from 'choicest-barnacle';
 import { ObjectEventDB } from './objectEventDB';
-import { ObjectEventMappingService } from './objectEventMappingService';
+import { ObjectEventDBMappingService } from './objectEventDBMappingService';
 
 export class Database {
     private logger: Logger;
     private db: sqlite.Database;
-    private readonly mappingService: ObjectEventMappingService = new ObjectEventMappingService();
+    private readonly mappingDBService = new ObjectEventDBMappingService();
 
     constructor(dbFileName: string) {
         this.logger = Logger.getLogger({ name: this.constructor.name });
@@ -16,7 +16,7 @@ export class Database {
     }
 
     public store(objectEvent: ObjectEvent): ObjectEvent {
-        const asObjectEventDB: ObjectEventDB = this.mappingService.toObjectEventDB(objectEvent);
+        const asObjectEventDB: ObjectEventDB = this.mappingDBService.toObjectEventDB(objectEvent);
         const stmt = this.db.prepare('INSERT INTO objectEvents(topic, time,eventType,object,objectType,payload) VALUES (?, ?, ?, ?, ?, ?)');
         const info = stmt.run(asObjectEventDB.topic, asObjectEventDB.time, asObjectEventDB.eventType,
             asObjectEventDB.object, asObjectEventDB.objectType, asObjectEventDB.payload);
@@ -39,7 +39,7 @@ export class Database {
         const dbEvents: ObjectEventDB[] = dbStmt.all(stmtParameters);
 
         const results: ObjectEvent[] = [];
-        dbEvents.forEach(aObjEventDB => { results.push(this.mappingService.toObjectEvent(aObjEventDB)) });
+        dbEvents.forEach(aObjEventDB => { results.push(this.mappingDBService.toObjectEvent(aObjEventDB)) });
         return results;
     }
 

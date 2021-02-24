@@ -4,9 +4,7 @@ import cors from 'cors';
 import EventEmmiter from 'events';
 
 import { Database } from './Database';
-import { ObjectEvent } from './objectEvent';
-import { ObjectEventMappingService } from './objectEventMappingService';
-import { ObjectEventREST } from './objectEventREST';
+import { ObjectEvent, ObjectEventMappingService, ObjectEventREST } from 'choicest-barnacle';
 
 export class Server {
     private logger: Logger;

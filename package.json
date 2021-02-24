@@ -1,6 +1,6 @@
 {
   "name": "happy-barnacle",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "description": "A backend server for persisting object events.",
   "keywords": [],
   "author": "Axel",
@@ -18,8 +18,6 @@
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "start": "rollup -c rollup.config.js -i src/main.ts && node dist/index.js",
-    "clean": "(rm -r ./dist || true)",
-    "clean:all": "npm run clean && (rm -r ./node_modules || true)",
     "test": "ts-node  --skip-project -s ./node_modules/jasmine-xml-reporter/bin/jasmine --config=jasmine.json",
     "testCLI": "ts-node  --skip-project -s ./node_modules/jasmine-xml-reporter/bin/jasmine --config=jasmine.json --junitreport",
     "lint": "eslint src/ --ext .ts"
@@ -31,22 +29,22 @@
     "@types/express": "^4.17.11",
     "@types/mocha": "^8.2.1",
     "@types/node": "^14.14.31",
-    "@typescript-eslint/eslint-plugin": "^4.15.1",
-    "@typescript-eslint/parser": "^4.15.1",
+    "@typescript-eslint/eslint-plugin": "^4.15.2",
+    "@typescript-eslint/parser": "^4.15.2",
     "chai": "^4.3.0",
     "eslint": "^7.20.0",
     "jasmine": "^3.6.4",
     "jasmine-spec-reporter": "^6.0.0",
     "jasmine-xml-reporter": "^1.2.1",
-    "rollup": "^2.39.0",
+    "rollup": "^2.39.1",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "rollup-plugin-typescript2": "^0.30.0",
-    "source-map-support": "^0.5.19",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.2.2"
   },
   "dependencies": {
     "better-sqlite3": "^7.1.2",
+    "choicest-barnacle": "1.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "sitka": "^1.0.5"
