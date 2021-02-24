@@ -10,7 +10,8 @@ export default {
           sitka:'sitka', 
           express: 'express', 
           cors: 'cors',
-          'better-sqlite3': 'sqlite'
+          'better-sqlite3': 'sqlite',
+          'choicest-barnacle':'choicest-barnacle'
       }
     },
     plugins: [
@@ -18,5 +19,5 @@ export default {
           typescript: require('typescript'),
         }),
     ],
-    external: [ 'sitka','cors','express','better-sqlite3' ]
+    external: [ 'sitka','cors','express','better-sqlite3','choicest-barnacle' ]
   };

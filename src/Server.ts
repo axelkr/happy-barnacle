@@ -3,9 +3,8 @@ import express from 'express';
 import cors from 'cors';
 
 import { Database } from './Database';
-import { ObjectEvent } from './objectEvent';
-import { ObjectEventMappingService } from './objectEventMappingService';
-import { ObjectEventREST } from './objectEventREST';
+import { ObjectEvent, ObjectEventMappingService, ObjectEventREST } from 'choicest-barnacle';
+import { ObjectEventDBMappingService } from './objectEventDBMappingService';
 
 export class Server {
     private logger: Logger;

@@ -1,12 +1,12 @@
 'use strict';
 
 import { expect } from 'chai';
-import { ObjectEventMappingService } from '../src/objectEventMappingService';
-import { ObjectEvent } from '../src/objectEvent';
+import { ObjectEventDBMappingService } from '../src/objectEventDBMappingService';
+import { ObjectEvent } from 'choicest-barnacle';
 
-describe('ObjectEventMappingService', () => {
+describe('ObjectEventDBMappingService', () => {
 	it('should create an instance using its constructor', () => {
-		const example: ObjectEventMappingService = new ObjectEventMappingService();
+		const example: ObjectEventDBMappingService = new ObjectEventDBMappingService();
 		expect(example, 'example should exist').to.exist; // tslint:disable-line:no-unused-expression
 	});
 	it('should return input after converting back and forth', () => {
@@ -19,7 +19,7 @@ describe('ObjectEventMappingService', () => {
 			time: new Date(2021, 1, 2, 11, 13, 44),
 			payload: new Map<string, string>([['a', 'bsad4'], ['b', 'adsada'], ['c', 'asd']])
 		};
-		const testObject: ObjectEventMappingService = new ObjectEventMappingService();
+		const testObject: ObjectEventDBMappingService = new ObjectEventDBMappingService();
 		const returnValue = testObject.toObjectEvent(testObject.toObjectEventDB(sampleInput));
 		expect(returnValue.topic).to.equal(sampleInput.topic);
 		expect(returnValue.id).to.equal(sampleInput.id);
