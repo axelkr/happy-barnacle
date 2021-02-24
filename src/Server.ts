@@ -5,7 +5,6 @@ import EventEmmiter from 'events';
 
 import { Database } from './Database';
 import { ObjectEvent, ObjectEventMappingService, ObjectEventREST } from 'choicest-barnacle';
-import { ObjectEventDBMappingService } from './objectEventDBMappingService';
 
 export class Server {
     private logger: Logger;
