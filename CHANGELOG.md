@@ -1,3 +1,6 @@
+# v3.0.1
+- fix: resource leak
+
 # v3.0.0
 - breaking change: don't provide object event types and conversion but reuse choicest-barnacle. This way other packages don't have to import this very package
 - update to latest versions

@@ -1,7 +1,6 @@
 import { Logger } from 'sitka';
 import express from 'express';
 import cors from 'cors';
-import EventEmmiter from 'events';
 
 import { Database } from './Database';
 import { ObjectEvent, ObjectEventMappingService, ObjectEventREST } from 'choicest-barnacle';
@@ -10,7 +9,7 @@ export class Server {
     private logger: Logger;
     private db: Database
     private objectEventMappingService: ObjectEventMappingService = new ObjectEventMappingService();
-    private newObjectEventStream: EventEmmiter = new EventEmmiter();
+    private responsesToSendServerSideEventsTo: express.Response[] = [];
 
     constructor(database: Database) {
         this.logger = Logger.getLogger({ name: this.constructor.name });
@@ -69,21 +68,19 @@ export class Server {
             const inputObjectEvent: ObjectEvent = this.objectEventMappingService.fromObjectEventREST(inputBody);
             const objectEvent = this.db.store(inputObjectEvent);
             res.status(200).send(this.objectEventMappingService.toObjectEventREST(objectEvent));
-            this.newObjectEventStream.emit('push', objectEvent);
+            this.pushServerSideEvent(objectEvent);
         });
 
-        const newObjectEventStream = this.newObjectEventStream;
-        const objectEventMappingService = this.objectEventMappingService;
-        app.get('/newObjectEvents', function (_request, response) {
+        app.get('/newObjectEvents', (request, response) => {
             response.writeHead(200, {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache',
                 'Connection': 'keep-alive',
             })
-            newObjectEventStream.on('push', function (objectEvent: ObjectEvent) {
-                response.write("event: message\n");
-                response.write("data:" + JSON.stringify(objectEventMappingService.toObjectEventREST(objectEvent)) + "\n\n");
-            })
+            request.on('close', () => {
+                this.responsesToSendServerSideEventsTo = this.responsesToSendServerSideEventsTo.filter( x => x !== response);
+              });
+            this.responsesToSendServerSideEventsTo.push(response);
         })
 
         app.use(function (_req, res) {
@@ -93,6 +90,15 @@ export class Server {
         app.listen(PORT, () => {
             this.logger.debug(`Server is running at http://localhost:${PORT}`);
         });
+    }
+
+    private pushServerSideEvent(objectEvent: ObjectEvent) {
+        const sendToResponses = [... this.responsesToSendServerSideEventsTo];
+        const asRESTObject = JSON.stringify(this.objectEventMappingService.toObjectEventREST(objectEvent));
+        sendToResponses.forEach(aResponse => {
+            aResponse.write("event: message\n");
+            aResponse.write("data:" + asRESTObject + "\n\n");
+        })
     }
 
     private validatePostedObjectEventREST(body: any): string[] { // eslint-disable-line @typescript-eslint/no-explicit-any
