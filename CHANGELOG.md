@@ -1,3 +1,6 @@
+# v3.0.3
+- fix: undefined origin means same origin ==> always trust those requests
+
 # v3.0.2
 - fix: cors options handle if called with an undefined origin
 
