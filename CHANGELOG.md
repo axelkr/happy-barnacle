@@ -1,3 +1,6 @@
+# v3.0.2
+- fix: cors options handle if called with an undefined origin
+
 # v3.0.1
 - fix: resource leak
 

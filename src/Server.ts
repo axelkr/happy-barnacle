@@ -21,7 +21,7 @@ export class Server {
 
         const corsOptions = {
             origin: function (origin: string, callback: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
-                const fromLocalHost = origin.startsWith('http://localhost:') || origin == 'http://localhost';
+                const fromLocalHost = origin !== undefined && (origin.startsWith('http://localhost:') || origin === 'http://localhost');
                 if (fromLocalHost) {
                     callback(null, true)
                 } else {
