@@ -1,5 +1,6 @@
-import { ObjectEvent } from 'choicest-barnacle';
+import { ObjectEvent, Topic } from 'choicest-barnacle';
 import { ObjectEventDB } from './objectEventDB';
+import { TopicDB } from './topicDB';
 
 export class DBMappingService {
   public toObjectEventDB(objectEvent: ObjectEvent): ObjectEventDB {
@@ -28,5 +29,17 @@ export class DBMappingService {
       objectType: objectEventDB.objectType,
       payload: convertedPayload
     };
+  }
+
+  public toTopicDB(topic:Topic): TopicDB {
+    return {
+      id: topic.id,
+      name: topic.name,
+      isReadOnly: topic.isReadOnly ? 1 : 0
+    }
+  }
+
+  public toTopic(topicDB:TopicDB): Topic {
+    return new Topic(topicDB.id,topicDB.name, topicDB.isReadOnly==1);
   }
 }

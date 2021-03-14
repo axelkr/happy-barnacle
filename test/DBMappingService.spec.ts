@@ -1,14 +1,12 @@
-'use strict';
-
-import { expect } from 'chai';
 import { DBMappingService } from '../src/DBMappingService';
 import { ObjectEvent } from 'choicest-barnacle';
 
 describe('DBMappingService', () => {
 	it('should create an instance using its constructor', () => {
 		const example = new DBMappingService();
-		expect(example, 'example should exist').to.exist; // tslint:disable-line:no-unused-expression
+		expect(example).toBeDefined();
 	});
+
 	it('should return input after converting back and forth', () => {
 		const sampleInput: ObjectEvent = {
 			topic: 'randomTopic2§',
@@ -21,12 +19,12 @@ describe('DBMappingService', () => {
 		};
 		const testObject = new DBMappingService();
 		const returnValue = testObject.toObjectEvent(testObject.toObjectEventDB(sampleInput));
-		expect(returnValue.topic).to.equal(sampleInput.topic);
-		expect(returnValue.id).to.equal(sampleInput.id);
-		expect(returnValue.object).to.equal(sampleInput.object);
-		expect(returnValue.objectType).to.equal(sampleInput.objectType);
-		expect(returnValue.eventType).to.equal(sampleInput.eventType);
-		expect(returnValue.time).to.deep.equals(sampleInput.time);
-		expect(returnValue.payload).to.deep.equal(sampleInput.payload);
+		expect(returnValue.topic).toBe(sampleInput.topic);
+		expect(returnValue.id).toBe(sampleInput.id);
+		expect(returnValue.object).toBe(sampleInput.object);
+		expect(returnValue.objectType).toBe(sampleInput.objectType);
+		expect(returnValue.eventType).toBe(sampleInput.eventType);
+		expect(returnValue.time).toStrictEqual(sampleInput.time);
+		expect(returnValue.payload).toStrictEqual(sampleInput.payload);
 	});
 });

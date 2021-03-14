@@ -67,7 +67,7 @@ export class Server {
             }
 
             const inputObjectEvent: ObjectEvent = this.mappingService.fromObjectEventREST(inputBody);
-            const objectEvent = this.db.store(inputObjectEvent);
+            const objectEvent = this.db.storeObjectEvent(inputObjectEvent);
             res.status(200).send(this.mappingService.toObjectEventREST(objectEvent));
             this.pushServerSideEvent(objectEvent);
         });

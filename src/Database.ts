@@ -1,8 +1,9 @@
 import { Logger } from 'sitka';
 import sqlite from 'better-sqlite3';
 
-import { ObjectEvent } from 'choicest-barnacle';
+import { ObjectEvent, Topic } from 'choicest-barnacle';
 import { ObjectEventDB } from './objectEventDB';
+import { TopicDB } from './topicDB';
 import { DBMappingService } from './DBMappingService';
 
 export class Database {
@@ -15,13 +16,28 @@ export class Database {
         this.initializeSqliteDatabase(dbFileName);
     }
 
-    public store(objectEvent: ObjectEvent): ObjectEvent {
-        const asObjectEventDB: ObjectEventDB = this.mappingDBService.toObjectEventDB(objectEvent);
+    public storeObjectEvent(objectEvent: ObjectEvent): ObjectEvent {
+        const asObjectEventDB = this.mappingDBService.toObjectEventDB(objectEvent);
         const stmt = this.db.prepare('INSERT INTO objectEvents(topic, time,eventType,object,objectType,payload) VALUES (?, ?, ?, ?, ?, ?)');
         const info = stmt.run(asObjectEventDB.topic, asObjectEventDB.time, asObjectEventDB.eventType,
             asObjectEventDB.object, asObjectEventDB.objectType, asObjectEventDB.payload);
         objectEvent.id = parseInt(info.lastInsertRowid.toString());
         return objectEvent;
+    }
+
+    public storeTopic(topic: Topic): void {
+        const asTopicDB = this.mappingDBService.toTopicDB(topic);
+        const stmt = this.db.prepare('INSERT INTO topics(id, name, isReadOnly ) VALUES (?, ?, ?)');
+        stmt.run(asTopicDB.id, asTopicDB.name, asTopicDB.isReadOnly);
+    }
+
+    public queryTopics(): Topic[] {
+        const dbStmt = this.db.prepare('SELECT * FROM topics');
+        const dbEvents: TopicDB[] = dbStmt.all();
+
+        const results: Topic[] = [];
+        dbEvents.forEach(aTopicDB => { results.push(this.mappingDBService.toTopic(aTopicDB)) });
+        return results;
     }
 
     public query(topic: string, parameters?: { object?: string, objectType?: string }): ObjectEvent[] {
@@ -65,7 +81,7 @@ export class Database {
                                                        objectType text NOT NULL,\
                                                        payload text)");
         createObjectEventTable.run();
-        this.db.prepare("CREATE INDEX topics ON objectEvents(topic)").run();
+        this.db.prepare("CREATE INDEX topicsInObjects ON objectEvents(topic)").run();
         this.db.prepare("CREATE INDEX objects ON objectEvents(object)").run();
     }
 
@@ -78,7 +94,7 @@ export class Database {
         const createTopicsTable = this.db.prepare("CREATE TABLE topics(\
             id text PRIMARY KEY,\
             name text NOT NULL,\
-            isReadOnly INTEGER NOT NULL");
+            isReadOnly INTEGER NOT NULL)");
         createTopicsTable.run();
     }
 }
