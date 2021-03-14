@@ -1,8 +1,7 @@
 import { ObjectEvent } from 'choicest-barnacle';
 import { ObjectEventDB } from './objectEventDB';
 
-export class ObjectEventDBMappingService {
-
+export class DBMappingService {
   public toObjectEventDB(objectEvent: ObjectEvent): ObjectEventDB {
     const convertedTime: string = objectEvent.time.toUTCString();
     const convertedPayload: string = JSON.stringify(Array.from(objectEvent.payload.entries()));

@@ -3,12 +3,12 @@ import express from 'express';
 import cors from 'cors';
 
 import { Database } from './Database';
-import { ObjectEvent, ObjectEventMappingService, ObjectEventREST } from 'choicest-barnacle';
+import { ObjectEvent, MappingService, ObjectEventREST } from 'choicest-barnacle';
 
 export class Server {
     private logger: Logger;
     private db: Database
-    private objectEventMappingService: ObjectEventMappingService = new ObjectEventMappingService();
+    private mappingService = new MappingService();
     private responsesToSendServerSideEventsTo: express.Response[] = [];
 
     constructor(database: Database) {
@@ -47,7 +47,7 @@ export class Server {
             const objectEvents = this.db.query(req.query.topic as string, optionalParameters);
             const asDBObjects: ObjectEventREST[] = [];
             objectEvents.forEach(objectEvent => {
-                asDBObjects.push(this.objectEventMappingService.toObjectEventREST(objectEvent))
+                asDBObjects.push(this.mappingService.toObjectEventREST(objectEvent))
             })
             res.status(200).send(JSON.stringify(asDBObjects));
         })
@@ -66,9 +66,9 @@ export class Server {
                 req.body.time = dateToBeDiscarded;
             }
 
-            const inputObjectEvent: ObjectEvent = this.objectEventMappingService.fromObjectEventREST(inputBody);
+            const inputObjectEvent: ObjectEvent = this.mappingService.fromObjectEventREST(inputBody);
             const objectEvent = this.db.store(inputObjectEvent);
-            res.status(200).send(this.objectEventMappingService.toObjectEventREST(objectEvent));
+            res.status(200).send(this.mappingService.toObjectEventREST(objectEvent));
             this.pushServerSideEvent(objectEvent);
         });
 
@@ -95,7 +95,7 @@ export class Server {
 
     private pushServerSideEvent(objectEvent: ObjectEvent) {
         const sendToResponses = [... this.responsesToSendServerSideEventsTo];
-        const asRESTObject = JSON.stringify(this.objectEventMappingService.toObjectEventREST(objectEvent));
+        const asRESTObject = JSON.stringify(this.mappingService.toObjectEventREST(objectEvent));
         sendToResponses.forEach(aResponse => {
             aResponse.write("event: message\n");
             aResponse.write("data:" + asRESTObject + "\n\n");

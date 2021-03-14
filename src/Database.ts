@@ -3,12 +3,12 @@ import sqlite from 'better-sqlite3';
 
 import { ObjectEvent } from 'choicest-barnacle';
 import { ObjectEventDB } from './objectEventDB';
-import { ObjectEventDBMappingService } from './objectEventDBMappingService';
+import { DBMappingService } from './DBMappingService';
 
 export class Database {
     private logger: Logger;
     private db: sqlite.Database;
-    private readonly mappingDBService = new ObjectEventDBMappingService();
+    private readonly mappingDBService = new DBMappingService();
 
     constructor(dbFileName: string) {
         this.logger = Logger.getLogger({ name: this.constructor.name });
@@ -45,22 +45,40 @@ export class Database {
 
     private initializeSqliteDatabase(dbFileName: string) {
         this.db = sqlite(dbFileName);
+        this.initializeObjectEventsTable();
+        this.initializeTopicsTable();
+        this.logger.debug(`DB started`);
+    }
 
+    private initializeObjectEventsTable() {
         const objectEventsTableExists = 1 == (this.db.prepare("SELECT COUNT(name) as NumberObjectEventsTables FROM sqlite_master WHERE type='table' AND name='objectEvents'").get().NumberObjectEventsTables);
-        if (!objectEventsTableExists) {
+        if (objectEventsTableExists) {
+            return;
+        }
 
-            this.logger.debug(`initializing new DB`);
-            const createObjectEventTable = this.db.prepare("CREATE TABLE objectEvents(id INTEGER PRIMARY KEY AUTOINCREMENT,\
+        this.logger.debug(`initializing table object events`);
+        const createObjectEventTable = this.db.prepare("CREATE TABLE objectEvents(id INTEGER PRIMARY KEY AUTOINCREMENT,\
                                                        topic text NOT NULL,\
                                                        time text NOT NULL,\
                                                        eventType text NOT NULL,\
                                                        object text NOT NULL,\
                                                        objectType text NOT NULL,\
                                                        payload text)");
-            createObjectEventTable.run();
-            this.db.prepare("CREATE INDEX topics ON objectEvents(topic)").run();
-            this.db.prepare("CREATE INDEX objects ON objectEvents(object)").run();
+        createObjectEventTable.run();
+        this.db.prepare("CREATE INDEX topics ON objectEvents(topic)").run();
+        this.db.prepare("CREATE INDEX objects ON objectEvents(object)").run();
+    }
+
+    private initializeTopicsTable() {
+        const topicsTableExists = 1 == (this.db.prepare("SELECT COUNT(name) as NumberTopicsTables FROM sqlite_master WHERE type='table' AND name='topics'").get().NumberTopicsTables);
+        if (topicsTableExists) {
+            return;
         }
-        this.logger.debug(`DB started`);
+        this.logger.debug(`initializing table topics`);
+        const createTopicsTable = this.db.prepare("CREATE TABLE topics(\
+            id text PRIMARY KEY,\
+            name text NOT NULL,\
+            isReadOnly INTEGER NOT NULL");
+        createTopicsTable.run();
     }
 }
