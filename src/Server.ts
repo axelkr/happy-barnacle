@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 
 import { Database } from './Database';
-import { ObjectEvent, MappingService, ObjectEventREST } from 'choicest-barnacle';
+import { ObjectEvent, MappingService, ObjectEventREST, TopicREST } from 'choicest-barnacle';
 
 export class Server {
     private logger: Logger;
@@ -79,10 +79,31 @@ export class Server {
                 'Connection': 'keep-alive',
             })
             request.on('close', () => {
-                this.responsesToSendServerSideEventsTo = this.responsesToSendServerSideEventsTo.filter( x => x !== response);
-              });
+                this.responsesToSendServerSideEventsTo = this.responsesToSendServerSideEventsTo.filter(x => x !== response);
+            });
             this.responsesToSendServerSideEventsTo.push(response);
         })
+
+        app.get('/topic', (_req, res) => {
+            const topics = this.db.queryTopics();
+            const topicsREST: TopicREST[] = [];
+            topics.forEach(topic => {
+                topicsREST.push(this.mappingService.toTopicREST(topic))
+            })
+            res.status(200).send(JSON.stringify(topicsREST));
+        })
+
+        app.post('/topic', (req, res) => {
+            const validationErrors: string[] = this.validatePostedTopicREST(req.body);
+            if (validationErrors.length > 0) {
+                res.status(400).send(validationErrors[0]);
+                return;
+            }
+
+            const inputTopic = this.mappingService.fromTopicREST(req.body);
+            this.db.storeTopic(inputTopic);
+            res.status(200).send(this.mappingService.toTopicREST(inputTopic));
+        });
 
         app.use(function (_req, res) {
             res.status(404).send();
@@ -100,6 +121,17 @@ export class Server {
             aResponse.write("event: message\n");
             aResponse.write("data:" + asRESTObject + "\n\n");
         })
+    }
+
+    private validatePostedTopicREST(body: any): string[] { // eslint-disable-line @typescript-eslint/no-explicit-any
+        const validationErrors: string[] = [];
+        const nonNullStringProperties = ['id', 'name', 'isReadOnly'];
+        nonNullStringProperties.forEach(aPropertyName => {
+            if (!this.hasNonNullStringProperty(body, aPropertyName)) {
+                validationErrors.push('parameter ' + aPropertyName + ' missing');
+            }
+        });
+        return validationErrors;
     }
 
     private validatePostedObjectEventREST(body: any): string[] { // eslint-disable-line @typescript-eslint/no-explicit-any
