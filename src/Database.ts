@@ -11,8 +11,9 @@ export class Database {
     private db: sqlite.Database;
     private readonly mappingDBService = new DBMappingService();
 
-    constructor(dbFileName: string) {
-        this.logger = Logger.getLogger({ name: this.constructor.name });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    constructor(dbFileName: string, loggerConfig: any = {name: 'Database',level: Logger.Level.ERROR}) {
+        this.logger = Logger.getLogger(loggerConfig);
         this.initializeSqliteDatabase(dbFileName);
     }
 

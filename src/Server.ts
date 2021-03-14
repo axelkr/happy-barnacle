@@ -11,8 +11,9 @@ export class Server {
     private mappingService = new MappingService();
     private responsesToSendServerSideEventsTo: express.Response[] = [];
 
-    constructor(database: Database) {
-        this.logger = Logger.getLogger({ name: this.constructor.name });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    constructor(database: Database,loggerConfig: any = {name: 'Server',level: Logger.Level.ERROR}) {
+        this.logger = Logger.getLogger(loggerConfig);
         this.db = database;
     }
 
