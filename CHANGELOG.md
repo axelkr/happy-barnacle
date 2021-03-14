@@ -1,3 +1,6 @@
+# v3.1.0
+- REST API for topics
+
 # v3.0.3
 - fix: undefined origin means same origin ==> always trust those requests
 
