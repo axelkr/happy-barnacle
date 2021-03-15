@@ -1,3 +1,6 @@
+# v3.1.1
+- fix: correct input validation
+
 # v3.1.0
 - REST API for topics
 
