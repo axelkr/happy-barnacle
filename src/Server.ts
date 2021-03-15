@@ -126,9 +126,15 @@ export class Server {
 
     private validatePostedTopicREST(body: any): string[] { // eslint-disable-line @typescript-eslint/no-explicit-any
         const validationErrors: string[] = [];
-        const nonNullStringProperties = ['id', 'name', 'isReadOnly'];
+        const nonNullStringProperties = ['id', 'name'];
         nonNullStringProperties.forEach(aPropertyName => {
             if (!this.hasNonNullStringProperty(body, aPropertyName)) {
+                validationErrors.push('parameter ' + aPropertyName + ' missing');
+            }
+        });
+        const nonNullBooleanProperties = ['isReadOnly'];
+        nonNullBooleanProperties.forEach(aPropertyName => {
+            if (!this.hasNonNullBooleanProperty(body, aPropertyName)) {
                 validationErrors.push('parameter ' + aPropertyName + ' missing');
             }
         });
@@ -167,4 +173,11 @@ export class Server {
         return (typeof objectProperty === 'string' || objectProperty instanceof String) && (objectProperty !== undefined) && (objectProperty.length > 0);
     }
 
+    private hasNonNullBooleanProperty(anObject: any, propertyName: string): boolean {// eslint-disable-line @typescript-eslint/no-explicit-any
+        if (!anObject.hasOwnProperty(propertyName)) { // eslint-disable-line no-prototype-builtins
+            return false;
+        }
+        const objectProperty = anObject[propertyName];
+        return (typeof objectProperty === 'boolean' || objectProperty instanceof Boolean) && (objectProperty !== undefined);
+    }
 }
