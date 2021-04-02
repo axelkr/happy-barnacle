@@ -27,11 +27,12 @@ export class DBMappingService {
       eventType: objectEventDB.eventType,
       object: objectEventDB.object,
       objectType: objectEventDB.objectType,
-      payload: convertedPayload
+      payload: convertedPayload,
+      isTransient: false
     };
   }
 
-  public toTopicDB(topic:Topic): TopicDB {
+  public toTopicDB(topic: Topic): TopicDB {
     return {
       id: topic.id,
       name: topic.name,
@@ -39,7 +40,7 @@ export class DBMappingService {
     }
   }
 
-  public toTopic(topicDB:TopicDB): Topic {
-    return new Topic(topicDB.id,topicDB.name, topicDB.isReadOnly==1);
+  public toTopic(topicDB: TopicDB): Topic {
+    return new Topic(topicDB.id, topicDB.name, topicDB.isReadOnly == 1);
   }
 }

@@ -15,7 +15,8 @@ describe('DBMappingService', () => {
 			objectType: 'objtsahik24S',
 			eventType: ' hlkfaf',
 			time: new Date(2021, 1, 2, 11, 13, 44),
-			payload: new Map<string, string>([['a', 'bsad4'], ['b', 'adsada'], ['c', 'asd']])
+			payload: new Map<string, string>([['a', 'bsad4'], ['b', 'adsada'], ['c', 'asd']]),
+			isTransient: false
 		};
 		const testObject = new DBMappingService();
 		const returnValue = testObject.toObjectEvent(testObject.toObjectEventDB(sampleInput));

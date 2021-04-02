@@ -1,3 +1,6 @@
+# v3.1.2
+- latest version
+
 # v3.1.1
 - fix: correct input validation
 
