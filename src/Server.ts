@@ -12,7 +12,7 @@ export class Server {
     private responsesToSendServerSideEventsTo: express.Response[] = [];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    constructor(database: Database,loggerConfig: any = {name: 'Server',level: Logger.Level.ERROR}) {
+    constructor(database: Database, loggerConfig: any = { name: 'Server', level: Logger.Level.ERROR }) {
         this.logger = Logger.getLogger(loggerConfig);
         this.db = database;
     }
@@ -34,6 +34,7 @@ export class Server {
         app.use(cors(corsOptions));
         app.use(express.json());
         app.get('/objectEvent', (req, res) => {
+            this.logger.info('GET objectEvent');
             if (!req.query.hasOwnProperty('topic')) { // eslint-disable-line no-prototype-builtins
                 res.status(400).send('parameter topic missing');
                 return;
@@ -54,6 +55,7 @@ export class Server {
         })
 
         app.post('/objectEvent', (req, res) => {
+            this.logger.info('POST objectEvent');
             const validationErrors: string[] = this.validatePostedObjectEventREST(req.body);
             if (validationErrors.length > 0) {
                 res.status(400).send(validationErrors[0]);
@@ -74,6 +76,7 @@ export class Server {
         });
 
         app.get('/newObjectEvents', (request, response) => {
+            this.logger.info('GET newObjectEvents');
             response.writeHead(200, {
                 'Content-Type': 'text/event-stream',
                 'Cache-Control': 'no-cache',
@@ -86,6 +89,7 @@ export class Server {
         })
 
         app.get('/topic', (_req, res) => {
+            this.logger.info('GET topic');
             const topics = this.db.queryTopics();
             const topicsREST: TopicREST[] = [];
             topics.forEach(topic => {
@@ -95,6 +99,7 @@ export class Server {
         })
 
         app.post('/topic', (req, res) => {
+            this.logger.info('POST topic');
             const validationErrors: string[] = this.validatePostedTopicREST(req.body);
             if (validationErrors.length > 0) {
                 res.status(400).send(validationErrors[0]);
