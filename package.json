@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "better-sqlite3": "^7.1.4",
-    "choicest-barnacle": "2.3.0",
+    "choicest-barnacle": "2.4.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "sitka": "^1.0.5"
