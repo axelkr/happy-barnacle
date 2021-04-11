@@ -111,6 +111,19 @@ export class Server {
             res.status(200).send(this.mappingService.toTopicREST(inputTopic));
         });
 
+        app.delete('/topic/:id', (req, res) => {
+            const { id } = req.params;
+            this.logger.info('DELETE topic + ' + id);
+            const topic = this.db.queryTopics().find(topic => topic.id === id);
+            if (topic === undefined) {
+                res.status(400).send('unknown topic id ' + id);
+                return;
+            }
+            this.db.removeTopic(topic);
+            res.status(200).send();
+        });
+
+
         app.use(function (_req, res) {
             res.status(404).send();
         });

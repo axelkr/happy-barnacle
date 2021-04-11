@@ -12,7 +12,7 @@ export class Database {
     private readonly mappingDBService = new DBMappingService();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    constructor(dbFileName: string, loggerConfig: any = {name: 'Database',level: Logger.Level.ERROR}) {
+    constructor(dbFileName: string, loggerConfig: any = { name: 'Database', level: Logger.Level.ERROR }) {
         this.logger = Logger.getLogger(loggerConfig);
         this.initializeSqliteDatabase(dbFileName);
     }
@@ -30,6 +30,13 @@ export class Database {
         const asTopicDB = this.mappingDBService.toTopicDB(topic);
         const stmt = this.db.prepare('INSERT INTO topics(id, name, isReadOnly ) VALUES (?, ?, ?)');
         stmt.run(asTopicDB.id, asTopicDB.name, asTopicDB.isReadOnly);
+    }
+
+    public removeTopic(topic: Topic): void {
+        const removeFromTopicTable = this.db.prepare('DELETE FROM topics where id = ?');
+        removeFromTopicTable.run(topic.id);
+        const removeFromObjectEventsTable = this.db.prepare('DELETE FROM objectEvents where topic = ?');
+        removeFromObjectEventsTable.run(topic.id);
     }
 
     public queryTopics(): Topic[] {
