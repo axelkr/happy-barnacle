@@ -113,7 +113,7 @@ export class Server {
 
         app.delete('/topic/:id', (req, res) => {
             const { id } = req.params;
-            this.logger.info('DELETE topic + ' + id);
+            this.logger.info('DELETE topic ' + id);
             const topic = this.db.queryTopics().find(topic => topic.id === id);
             if (topic === undefined) {
                 res.status(400).send('unknown topic id ' + id);
