@@ -35,12 +35,11 @@ export class DBMappingService {
   public toTopicDB(topic: Topic): TopicDB {
     return {
       id: topic.id,
-      name: topic.name,
-      isReadOnly: topic.isReadOnly ? 1 : 0
+      name: topic.name
     }
   }
 
   public toTopic(topicDB: TopicDB): Topic {
-    return new Topic(topicDB.id, topicDB.name, topicDB.isReadOnly == 1);
+    return new Topic(topicDB.id, topicDB.name);
   }
 }

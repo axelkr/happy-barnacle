@@ -28,8 +28,8 @@ export class Database {
 
     public storeTopic(topic: Topic): void {
         const asTopicDB = this.mappingDBService.toTopicDB(topic);
-        const stmt = this.db.prepare('INSERT INTO topics(id, name, isReadOnly ) VALUES (?, ?, ?)');
-        stmt.run(asTopicDB.id, asTopicDB.name, asTopicDB.isReadOnly);
+        const stmt = this.db.prepare('INSERT INTO topics(id, name ) VALUES (?, ?)');
+        stmt.run(asTopicDB.id, asTopicDB.name);
     }
 
     public removeTopic(topic: Topic): void {
@@ -101,8 +101,7 @@ export class Database {
         this.logger.debug(`initializing table topics`);
         const createTopicsTable = this.db.prepare("CREATE TABLE topics(\
             id text PRIMARY KEY,\
-            name text NOT NULL,\
-            isReadOnly INTEGER NOT NULL)");
+            name text NOT NULL)");
         createTopicsTable.run();
     }
 }

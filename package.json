@@ -1,6 +1,6 @@
 {
   "name": "happy-barnacle",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "A backend server for persisting object events.",
   "keywords": [],
   "author": "Axel",
@@ -46,7 +46,7 @@
   },
   "dependencies": {
     "better-sqlite3": "^7.1.4",
-    "choicest-barnacle": "2.4.0",
+    "choicest-barnacle": "^2.5.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "sitka": "^1.0.5"
