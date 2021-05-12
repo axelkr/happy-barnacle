@@ -1,3 +1,6 @@
+# 3.2.2
+- latest versions of dependencies
+
 # 3.2.1
 - latest versions of dependencies
 
