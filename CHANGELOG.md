@@ -1,3 +1,7 @@
+# 3.2.3
+- latest versions of dependencies
+- fix: query optional parameters correctly
+
 # 3.2.2
 - latest versions of dependencies
 

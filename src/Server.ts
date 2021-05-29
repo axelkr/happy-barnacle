@@ -40,10 +40,10 @@ export class Server {
                 return;
             }
             const optionalParameters: { object?: string, objectType?: string } = {};
-            if (!req.query.hasOwnProperty('object')) {// eslint-disable-line no-prototype-builtins
+            if (req.query.hasOwnProperty('object')) {// eslint-disable-line no-prototype-builtins
                 optionalParameters.object = req.query.object as string;
             }
-            if (!req.query.hasOwnProperty('objectType')) {// eslint-disable-line no-prototype-builtins
+            if (req.query.hasOwnProperty('objectType')) {// eslint-disable-line no-prototype-builtins
                 optionalParameters.objectType = req.query.objectType as string;
             }
             const objectEvents = this.db.query(req.query.topic as string, optionalParameters);
