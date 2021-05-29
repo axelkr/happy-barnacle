@@ -39,14 +39,20 @@ export class Server {
                 res.status(400).send('parameter topic missing');
                 return;
             }
-            const optionalParameters: { object?: string, objectType?: string } = {};
+            const optionalParameters: { object?: string, objectType?: string, limit?: number, start: number } = { start: 0 };
             if (req.query.hasOwnProperty('object')) {// eslint-disable-line no-prototype-builtins
                 optionalParameters.object = req.query.object as string;
             }
             if (req.query.hasOwnProperty('objectType')) {// eslint-disable-line no-prototype-builtins
                 optionalParameters.objectType = req.query.objectType as string;
             }
-            const objectEvents = this.db.query(req.query.topic as string, optionalParameters);
+            if (req.query.hasOwnProperty('limit')) {// eslint-disable-line no-prototype-builtins
+                optionalParameters.limit = Number.parseInt(req.query.limit as string);
+            }
+            if (req.query.hasOwnProperty('start')) {// eslint-disable-line no-prototype-builtins
+                optionalParameters.start = Number.parseInt(req.query.limit as string);
+            }
+            const objectEvents = this.db.queryObjectEvents(req.query.topic as string, optionalParameters);
             const asDBObjects: ObjectEventREST[] = [];
             objectEvents.forEach(objectEvent => {
                 asDBObjects.push(this.mappingService.toObjectEventREST(objectEvent))
