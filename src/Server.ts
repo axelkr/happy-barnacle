@@ -50,7 +50,7 @@ export class Server {
                 optionalParameters.limit = Number.parseInt(req.query.limit as string);
             }
             if (req.query.hasOwnProperty('start')) {// eslint-disable-line no-prototype-builtins
-                optionalParameters.start = Number.parseInt(req.query.limit as string);
+                optionalParameters.start = Number.parseInt(req.query.start as string);
             }
             const objectEvents = this.db.queryObjectEvents(req.query.topic as string, optionalParameters);
             const asDBObjects: ObjectEventREST[] = [];
