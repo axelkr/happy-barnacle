@@ -6,6 +6,8 @@ import { ObjectEventDB } from './objectEventDB';
 import { TopicDB } from './topicDB';
 import { DBMappingService } from './DBMappingService';
 
+export type OptionsQueryObjectEvents = { object?: string, objectType?: string, limit?: number, start: number };
+
 export class Database {
     private logger: Logger;
     private db: sqlite.Database;
@@ -48,7 +50,7 @@ export class Database {
         return results;
     }
 
-    public queryObjectEvents(topic: string, parameters?: { object?: string, objectType?: string }): ObjectEvent[] {
+    public queryObjectEvents(topic: string, parameters?: OptionsQueryObjectEvents): ObjectEvent[] {
         let stmt = 'SELECT * FROM objectEvents WHERE topic= ?';
         const stmtParameters: string[] = [topic];
         if (parameters !== undefined && parameters.object !== undefined) {

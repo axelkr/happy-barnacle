@@ -2,7 +2,7 @@ import { Logger } from 'sitka';
 import express from 'express';
 import cors from 'cors';
 
-import { Database } from './Database';
+import { Database, OptionsQueryObjectEvents } from './Database';
 import { ObjectEvent, MappingService, ObjectEventREST, TopicREST } from 'choicest-barnacle';
 
 export class Server {
@@ -39,7 +39,7 @@ export class Server {
                 res.status(400).send('parameter topic missing');
                 return;
             }
-            const optionalParameters: { object?: string, objectType?: string, limit?: number, start: number } = { start: 0 };
+            const optionalParameters: OptionsQueryObjectEvents = { start: 0 };
             if (req.query.hasOwnProperty('object')) {// eslint-disable-line no-prototype-builtins
                 optionalParameters.object = req.query.object as string;
             }
