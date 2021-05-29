@@ -1,3 +1,6 @@
+# 3.3.0
+- GET /objectEvents now supports pagination via the parameters limit (how many results to return at most) and start (index of first object to return in list of complete result set).
+
 # 3.2.3
 - latest versions of dependencies
 - fix: query optional parameters correctly

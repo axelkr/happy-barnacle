@@ -61,11 +61,23 @@ export class Database {
             stmt = stmt + " AND objectType = ?";
             stmtParameters.push(parameters.objectType);
         }
+        let start = (parameters !== undefined && parameters.start !== undefined) ? parameters.start : 0;
+        const unlimited = -1;
+        let limit = (parameters !== undefined && parameters.limit !== undefined && parameters.limit > 0) ? parameters.limit : unlimited;
         const dbStmt = this.db.prepare(stmt);
         const dbEvents: ObjectEventDB[] = dbStmt.all(stmtParameters);
 
         const results: ObjectEvent[] = [];
-        dbEvents.forEach(aObjEventDB => { results.push(this.mappingDBService.toObjectEvent(aObjEventDB)) });
+        dbEvents.forEach(aObjEventDB => {
+            if (start > 0) { // skip this element
+                start = start - 1;
+            } else if (limit === unlimited || limit > 0) {
+                results.push(this.mappingDBService.toObjectEvent(aObjEventDB));
+                if (limit > 0) {
+                    limit = limit - 1;
+                }
+            }
+        });
         return results;
     }
 
