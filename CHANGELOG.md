@@ -1,3 +1,6 @@
+# 3.3.2
+- latest versions 
+
 # 3.3.1
 - fix: read correct parameter
 
